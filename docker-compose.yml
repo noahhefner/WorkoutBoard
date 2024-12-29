@@ -1,0 +1,7 @@
+
+services:
+  web:
+    build: .
+    image: nhefner/WorkoutBoard:latest
+    ports:
+      - "8080:8080"
