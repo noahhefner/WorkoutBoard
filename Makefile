@@ -11,7 +11,7 @@ build:
 
 .PHONY: dev
 dev:
-	flask --app workout_board --debug run
+	python main.py
 
 .PHONY: run
 run:
