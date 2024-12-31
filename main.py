@@ -4,14 +4,20 @@ import os
 import sys
 from pathlib import Path
 
-#from .db import init_db
+from db import init_db
 
-# create and configure the app
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__)
+
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
 
 socketio = SocketIO(app)
 
-#init_db()
+with app.app_context():
+
+    init_db()
 
 @app.route('/')
 def index():

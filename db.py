@@ -4,7 +4,7 @@ from flask import current_app
 
 def init_db():
     """Initialize the database and create tables."""
-    db_path = os.path.join(current_app.instance_path, 'workout_app.db')
+    db_path = os.path.join(current_app.instance_path, 'workouts.db')
     
     # Connect to SQLite database (it will create the file if it doesn't exist)
     conn = sqlite3.connect(db_path)
