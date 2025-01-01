@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-from db import init_db, get_all_workouts
+from db import init_db, get_all_workouts, get_workout_by_id
 
 app = Flask(__name__)
 
@@ -28,6 +28,8 @@ def control():
 
     workouts = get_all_workouts()
 
+    print(workouts)
+
     return render_template('control.tmpl.html', workouts = workouts)
 
 @app.route('/board')
@@ -45,7 +47,10 @@ def disconnect():
 
 @socketio.on('workoutselected')
 def workout_selected(data):
-    emit('workoutselected', data, broadcast=True)
+
+    workout = get_workout_by_id(data)
+
+    emit('workoutselected', workout, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, use_reloader=True)
