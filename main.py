@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-from db import init_db
+from db import init_db, get_all_workouts
 
 app = Flask(__name__)
 
@@ -25,7 +25,10 @@ def index():
 
 @app.route('/control')
 def control():
-    return render_template('control.tmpl.html')
+
+    workouts = get_all_workouts()
+
+    return render_template('control.tmpl.html', workouts = workouts)
 
 @app.route('/board')
 def board():
@@ -41,4 +44,4 @@ def disconnect():
     print('Client disconnected.')
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True, use_reloader=True)
