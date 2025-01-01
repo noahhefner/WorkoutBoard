@@ -18,14 +18,14 @@
     crossorigin="anonymous"></script>
   <script
     src=" https://cdn.jsdelivr.net/npm/socket.io@4.8.1/client-dist/socket.io.min.js ">
-  </script>
+    </script>
   <title>Control</title>
 </head>
 
 <body>
-  <nav class="navbar bg-success">
+  <nav class="navbar bg-primary">
     <div class="container">
-      <a class="navbar-brand text-light" href="#">WB</a>
+      <a class="navbar-brand text-light" href="#"><strong>WB</strong></a>
     </div>
   </nav>
   <div class="container mt-4">
@@ -40,59 +40,86 @@
               {% for workout in workouts %}
               <div class="accordion-item">
                 <h2 class="accordion-header">
-                  <button 
-                    class="accordion-button collapsed" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target='#collapse-{{workout["workout_id"]}}'
-                  >
+                  <button class="accordion-button collapsed" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target='#collapse-{{workout["workout_id"]}}'>
                     {{ workout["workout_name"] }}
                   </button>
                 </h2>
-                <div 
-                  id='collapse-{{workout["workout_id"]}}'
+                <div id='collapse-{{workout["workout_id"]}}'
                   class="accordion-collapse collapse"
-                  data-bs-parent="#accordionWorkouts"
-                >
-                  <div class="accordion-body">
-                    {{ workout["description"] }}
-
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">Movement</th>
-                          <th scope="col">Reps</th>
-                          <th scope="col">Sets</th>
-                          <th scope="col">Duration</th>
-                        </tr>
-                      </thead>      
-                      <tbody>
-                        {% for movement in workout["movements"] %}
-                        <tr>
-                          <td>{{ movement["movement_name"] }}</td>
-                          <td>{{ movement["reps"] }}</td>
-                          <td>{{ movement["sets"] }}</td>
-                          <td>{{ movement["duration"] }}</td>
-                        </tr>         
-                        {% endfor %}           
-                      </tbody>              
-                    </table>
+                  data-bs-parent="#accordionWorkouts">
+                  <div class="accordion-body gap-2">
+                    <div class="d-grid mb-3">
+                      <button 
+                        class="btn btn-primary" 
+                        type="button"
+                        onclick="selectWorkout(this)"
+                        data-workout-id='{{ workout["workout_id"] }}'
+                      >Load Workout
+                      </button>
+                    </div>
+                    <div class="card mb-3">
+                      <div class="card-header">
+                        <strong>Description</strong>
+                      </div>
+                      <div class="card-body">
+                        {{ workout["description"] }}
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header">
+                        <strong>Movements</strong>
+                      </div>
+                      <div class="card-body">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Movement</th>
+                              <th scope="col">Reps</th>
+                              <th scope="col">Sets</th>
+                              <th scope="col">Duration</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for movement in workout["movements"] %}
+                            <tr>
+                              <td>{{ movement["movement_name"] }}</td>
+                              <td>{{ movement["reps"] }}</td>
+                              <td>{{ movement["sets"] }}</td>
+                              <td>{{ movement["duration"] }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               {% endfor %}
             </div>
           </div>
-        </div>             
+        </div>
       </div>
-      <div class="col">
-        Controls Here
+      <div class="col d-none" id="workoutControls">
+        <div class="card">
+          <div class="card-body text-secondary">
+            start
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var socket = io();
+    var socket = io();
+    // send workoutselected event to server
+    function selectWorkout(e){
+      socket.emit('workoutselected', e.dataset.workoutId);
+    }
+    // listen to workoutselected event from server
+    socket.on('workoutselected', (message) => {
+      document.querySelector('#workoutControls').classList.remove('d-none');
     });
   </script>
 </body>

@@ -43,5 +43,9 @@ def connect():
 def disconnect():
     print('Client disconnected.')
 
+@socketio.on('workoutselected')
+def workout_selected(data):
+    emit('workoutselected', data, broadcast=True)
+
 if __name__ == '__main__':
     socketio.run(app, debug=True, use_reloader=True)
