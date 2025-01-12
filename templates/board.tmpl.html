@@ -24,7 +24,7 @@
   <title>Workout Board</title>
 </head>
 
-<body>
+<body class="vh-100 d-flex flex-column">
   <nav class="navbar bg-primary">
     <div class="container">
       <a class="navbar-brand text-light" href="#"><strong>Workout Board <i class="bi bi-clipboard2-pulse-fill"></i></strong></a>
@@ -32,9 +32,30 @@
         class="badge rounded-pill text-bg-danger fs-6 border border-white shadow-sm">Disconnected</span>
     </div>
   </nav>
-  <div class="container">
+  <main class="container flex-grow-1" id="app">
     Load a workout from the control screen to get started
-  </div>
+  </main>
+  <footer id="footer" class="bg-danger">
+
+  </footer>
+  <template id="boardTemplate">
+    <div class="row">
+      <div class="col">
+        <div>
+          Time Here
+        </div>
+        <div>
+          workouts here
+        </div>
+      </div>
+      <div class="col">
+        Demo Here
+      </div>
+    </div>
+  </template>
+  <template id="timeFooter">
+    <p id="totalTimeRemaining"></p>
+  </template>
   <script>
     var socket = io();
 
@@ -56,7 +77,31 @@
 
     // listen to workoutselected event from server
     socket.on('workoutselected', (message) => {
-      console.log(message);
+
+      const totalDurationSeconds = Number(message['total_duration']);
+      const hours = Math.floor(totalDurationSeconds / 3600);
+      const minutes = Math.floor((totalDurationSeconds % 3600) / 60)
+      const seconds = totalDurationSeconds % 60;
+
+      const formattedTime = 
+        (hours < 10 ? '0' : '') + hours + ':' +
+        (minutes < 10 ? '0' : '') + minutes + ':' +
+        (seconds < 10 ? '0' : '') + seconds;
+
+      // load workout info
+      let tmp = document.querySelector('#boardTemplate');
+      let cloned = tmp.content.cloneNode(true);
+      const main = document.querySelector('#app');
+      main.innerHTML = '';
+      main.appendChild(cloned);
+
+      // setup total time timer
+      tmp = document.querySelector('#timeFooter');
+      cloned = tmp.content.cloneNode(true);
+      const time = cloned.querySelector('#totalTimeRemaining');
+      time.innerHTML = formattedTime;
+      const footer = document.querySelector('#footer');
+      footer.appendChild(cloned);
     });
   </script>
 </body>

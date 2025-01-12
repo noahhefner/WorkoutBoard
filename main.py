@@ -28,8 +28,6 @@ def control():
 
     workouts = get_all_workouts()
 
-    print(workouts)
-
     return render_template('control.tmpl.html', workouts = workouts)
 
 @app.route('/board')
@@ -49,6 +47,8 @@ def disconnect():
 def workout_selected(data):
 
     workout = get_workout_by_id(data)
+
+    print(workout)
 
     emit('workoutselected', workout, broadcast=True)
 
